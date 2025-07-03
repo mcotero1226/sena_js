@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>CRUD Usuarios</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            background-color: #f5f5f5;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        form, table {
+            margin: 20px auto;
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #ccc;
+        }
+        input[type="text"], input[type="email"] {
+            width: 48%;
+            padding: 8px;
+            margin: 5px 1%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button.edit {
+            background-color: #ffc107;
+        }
+        button.delete {
+            background-color: #dc3545;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table th, table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        .actions button {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>CRUD de Usuarios</h2>
+
+<form id="formulario">
+    <input type="text" id="nombre" placeholder="Nombre" required>
+    <input type="email" id="correo" placeholder="Correo electrónico" required>
+    <input type="hidden" id="indice">
+    <button type="submit">Guardar</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody id="tabla-usuarios"></tbody>
+</table>
+
+<script>
+    // traerce con variables con el dom
+    const form = document.getElementById('formulario');
+    const nombreInput = document.getElementById('nombre');
+    const correoInput = document.getElementById('correo');
+    const indiceInput = document.getElementById('indice');
+    const tabla = document.getElementById('tabla-usuarios');
+	//Leer y convertir texto a objeto con la clve
+    let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+
+    function renderizar() {
+        // Limpiar la tabla antes de renderizar
+        tabla.innerHTML = "";
+        // Recorrer el array de usuarios y crear filas en la tabla
+        usuarios.forEach((usuario, i) => {
+            const fila = document.createElement('tr');
+            fila.innerHTML = `
+                <td>${usuario.nombre}</td>
+                <td>${usuario.correo}</td>
+                <td class="actions">
+                    <button class="edit" onclick="editar(${i})">Editar</button>
+                    <button class="delete" onclick="eliminar(${i})">Eliminar</button>
+                </td>
+            `;
+            // Agregar la fila a la tabla
+            tabla.appendChild(fila);
+        });
+        // Guardar los usuarios actualizados en localStorage
+        localStorage.setItem('usuarios', JSON.stringify(usuarios));
+    }
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        const nombre = nombreInput.value.trim();
+        const correo = correoInput.value.trim();
+        const indice = indiceInput.value;
+
+        if (nombre && correo) {
+            if (indice === "") {
+                usuarios.push({ nombre, correo });
+            } else {
+                usuarios[indice] = { nombre, correo };
+                indiceInput.value = "";
+            }
+
+            nombreInput.value = "";
+            correoInput.value = "";
+            renderizar();
+        }
+    });
+
+    function editar(i) {
+        const usuario = usuarios[i];
+        nombreInput.value = usuario.nombre;
+        correoInput.value = usuario.correo;
+        indiceInput.value = i;
+    }
+
+    function eliminar(i) {
+        if (confirm("¿Seguro que deseas eliminar este usuario?")) {
+            usuarios.splice(i, 1);
+            renderizar();
+        }
+    }
+
+    renderizar();
+</script>
+
+</body>
+</html>

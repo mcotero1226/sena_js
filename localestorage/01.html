@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>To-Do con LocalStorage</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 30px;
+      max-width: 400px;
+      margin: auto;
+    }
+
+    input {
+      width: 70%;
+      padding: 10px;
+    }
+
+    button {
+      padding: 10px;
+      margin: 5px;
+      cursor: pointer;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      background: #f1f1f1;
+      margin: 5px 0;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Lista de Tareas</h2>
+
+  <input type="text" id="tareaInput" placeholder="Escribe una tarea">
+  <button onclick="agregarTarea()">Agregar</button>
+
+  <ul id="listaTareas"></ul>
+
+
+
+
+
+  <script>
+    // Cargar tareas desde localStorage al cargar la página
+    window.addEventListener("load", mostrarTareas);
+
+    function agregarTarea() {
+      const input = document.getElementById("tareaInput");
+      const texto = input.value.trim();
+      if (texto === "") return;
+
+      let tareas = JSON.parse(localStorage.getItem("tareas")) || [];
+      tareas.push(texto);
+      localStorage.setItem("tareas", JSON.stringify(tareas));
+      alert("Tarea agregada ");
+
+
+      input.value = "";
+      mostrarTareas();
+    }
+
+    // Mostrar las tareas almacenadas en localStorage
+    // y permitir borrarlas       
+    
+
+    function mostrarTareas() {
+      const lista = document.getElementById("listaTareas");
+      lista.innerHTML = "";
+
+      let tareas = JSON.parse(localStorage.getItem("tareas")) || [];
+
+      tareas.forEach((tarea, index) => {
+        const li = document.createElement("li");
+        li.textContent = tarea;
+
+        const btnBorrar = document.createElement("button");
+        btnBorrar.textContent = "Borrar";
+        btnBorrar.onclick = function() {
+          borrarTarea(index);
+        };
+
+        li.appendChild(btnBorrar);
+        lista.appendChild(li);
+      });
+    }
+
+    function borrarTarea(index) {
+      let tareas = JSON.parse(localStorage.getItem("tareas")) || [];
+      tareas.splice(index, 1);
+      localStorage.setItem("tareas", JSON.stringify(tareas));
+      alert("aceptas borar la tarea ");
+
+      mostrarTareas();
+    }
+    // Función para limpiar todas las tareas
+    function limpiarTareas() {
+      localStorage.removeItem("tareas");
+      alert("Todas las tareas han sido eliminadas.");
+      mostrarTareas();
+    }
+    // Agregar un botón para limpiar todas las tareas
+    const botonLimpiar = document.createElement("button");
+    botonLimpiar.textContent = "Limpiar Tareas";
+    document.body.appendChild(botonLimpiar);
+    botonLimpiar.onclick = limpiarTareas;
+
+    // Al cargar la página, aplicar el color de fondo guardado si existe
+    const colorGuardado = localStorage.getItem('colorfondo');
+    if (colorGuardado) {
+      document.body.style.backgroundColor = colorGuardado;
+    }
+
+    const cambiarfondo = document.createElement("button");
+    cambiarfondo.textContent = "Cambiar Color de Fondo";
+    document.body.appendChild(cambiarfondo);
+    
+    cambiarfondo.onclick = function() {
+      const fondoca = document.body.style.backgroundColor === "lightblue" ? "#4024a7" : "lightblue";
+      const cambiotexto=document.getElementById("tareaInput");
+      cambiotexto.style.backgroundColor = fondoca;
+      document.body.style.backgroundColor = fondoca;
+      localStorage.setItem('colorfondo', fondoca);
+    };
+
+
+  
+    
+
+
+  </script>
+
+</body>
+</html>
