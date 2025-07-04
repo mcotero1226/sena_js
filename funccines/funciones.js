@@ -157,9 +157,41 @@ console.log(ma('gracias dios'));
 
 
 
+const suma = (n1, n2) => n1 + n2;
+console.log(suma(3, 5));
 
 
+const multi =(n3,n4)=> n3*n4
+console.log(multi(8,8));
 
+// Función que verifica si num1 es múltiplo de mul
+const espar = (num1, mul) => {
+    if (num1 % mul === 0) {
+        console.log(`${num1} es múltiplo de ${mul}`);
+        return true;
+    } else {
+        console.log(`${num1} no es múltiplo de ${mul}`);
+        return false;
+    }
+};
+espar(100, 20);
+
+const cadena=(letras,veces)=>{
+    let z=""
+    for(const i=0;i<veces;i++){
+        z +=letras
+
+    }
+return z
+}
+
+const nombre=prompt('diaga su nombre');
+if(nombre==''){
+    alert('su nombre no esta');
+
+}else{
+    alert(`su nombre es ${nombre} `)
+}
 
 
 
